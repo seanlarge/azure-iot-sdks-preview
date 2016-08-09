@@ -42,3 +42,4 @@ if(${use_amqp})
 endif()
 
 add_subdirectory(version_unittests)
+add_subdirectory(easy)
