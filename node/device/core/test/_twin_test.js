@@ -83,6 +83,9 @@ var FakeClient = function(transport) {
 };
 
 Twin.timeout = 10;
+// Live services require 30 seconds after subscribe.  Unit tests don't 
+// need the same delay.
+Twin.delayAfterSubscribeAndBeforeTraffic = 1;
 
 describe('Twin', function () {
   describe('fromDeviceClient', function () {

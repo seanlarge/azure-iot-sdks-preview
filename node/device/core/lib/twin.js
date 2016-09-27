@@ -19,6 +19,7 @@ var Twin = function(client) {
 
 util.inherits(Twin, EventEmitter);
 
+Twin.delayAfterSubscribeAndBeforeTraffic = 30000;
 Twin.timeout = 1000;
 
 Twin.errorEvent = 'error';
@@ -77,11 +78,14 @@ Twin.fromDeviceClient = function(client, done) {
             if (err) {
               done(err);
             } else {
-              client._twin = twin;
-              twin._getPropertiesFromService(function (err) {
-                /* Codes_SRS_NODE_DEVICE_TWIN_18_043: [** If the GET operation fails, `fromDeviceClient` shall call the done method with the error object in the first parameter **]** */
-                done(err, twin);
-              });
+              // service bug: delay 30 seconds after successful subscription before any activity.
+              setTimeout(function() {
+                client._twin = twin;
+                twin._getPropertiesFromService(function (err) {
+                  /* Codes_SRS_NODE_DEVICE_TWIN_18_043: [** If the GET operation fails, `fromDeviceClient` shall call the done method with the error object in the first parameter **]** */
+                  done(err, twin);
+                });
+              }, Twin.delayAfterSubscribeAndBeforeTraffic);
             }
           });
         }
